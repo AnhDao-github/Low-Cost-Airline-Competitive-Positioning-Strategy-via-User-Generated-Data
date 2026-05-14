@@ -1,0 +1,1047 @@
+---
+title: "DaoDang_UGC Google Trends"
+author: "DD"
+date: "2026-04-18"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(repos=c(CRAN = "https://cloud.r-project.org/"))
+```
+
+# AeroValue - Competitive Positioning Strategy using UGD
+
+# 1. Executive summary
+
+The European low-cost aviation market is highly profitable but structurally broken. It is currently defined by a massive "trust deficit" fueled by passenger anger, hidden fees, and severe operational anxiety. While long-standing budget carriers have earned massive brand awareness, our data proves this visibility is derived entirely from market necessity, not customer loyalty.
+
+AeroValue has a unique, high-yield opportunity to capture significant market share without engaging in a marketing spending war. By simply raising the operational floor of offering pricing transparency, proactive digital communication, and frictionless ground operations, AeroValue can position itself as the highly reliable, modern alternative in a market where a 1-star review has become the median customer experience.
+
+# 2. Introduction
+
+AeroValue is preparing to enter the highly saturated European low-cost carrier (LCC) market. To successfully penetrate a landscape dominated by giants (Ryanair, easyJet) and agile challengers (Norwegian Air, Jet2), AeroValue cannot rely on intuition.
+
+This strategic plan presents a data-driven roadmap for market entry. By utilizing advanced text-mining and sentiment analysis on over 9,500 verified customer reviews, alongside broader market search trends, this report decodes the specific emotional and operational drivers of passenger satisfaction and dissatisfaction. The goal is to define a positioning strategy that avoids the systemic pitfalls of the industry and establishes a sustainable competitive action plan for AeroValue.
+
+# 3. Industry Analysis and Market Context
+
+The European low-cost carrier (LCC) market is experiencing robust post-pandemic demand, yet the operating environment remains volatile. Airports across the continent are struggling with persistent staffing shortages and Air Traffic Control (ATC) strikes, driving severe operational friction. According to (EUROCONTROL, 2023), this systematic capacity issues have made unpredictable delays a standard industry feature. For the modern budget traveller, this transforms the airport experience into a source of high anxiety rather than the exciting start to a vacation.
+
+Furthermore, the long-standing LCC pricing model is offering impossibly low base fares while aggressively monetizing basic add-ons has reached a breaking point. Consumer exhaustion is at an all-time high as passengers are penalized at the gate with hidden fees for bringing a weekend backpack or wanting to sit next to their family. This consumer frustration is now driving legal action. In late 2023, the European Parliament adopted a resolution (European Parliament, 2023), signaling a regulatory imposed on hidden LCC fees. Because legacy low-cost airlines rely so heavily on these punitive fees for their record profits, they cannot easily pivot without cannibalizing their revenue.
+
+This creates a clear, undefended market opening for **AeroValue**: an airline that offers a comparable budget price point, but proactively delivers it with absolute transparency, operational respect, and digital efficiency.
+
+*Reference*
+
+EUROCONTROL (2023) Comprehensive Air Traffic Assessment 2022. Brussels: EUROCONTROL. Available at: (Accessed: 26 April 2026).
+
+European Parliament (2023) European Parliament resolution on aviation safety and air traffic management (B9-0391/2023). Available at: (Accessed: 26 April 2026).
+
+# 4. Methods
+
+Our strategy is built upon a multi-layered analysis of the competitive landscape.
+
+- **Google Trends Analysis**
+
+Before analyzing customer satisfaction, a baseline of brand visibility must be established. Google Trends https://trends.google.com/trends/ was selected to map the macro-level demand and competitive footprint of the airlines.
+
+The geographic proxy for measuring brand awareness (2016–2026) merges the EU’s highest-volume short-haul markets (Spain, France, Germany, and Italy) with the operational home bases of the major competitors (Great Britain for easyJet and Jet2, Ireland for Ryanair, and Norway for Norwegian Air). This dual approach ensures both broad continental demand patterns and localized brand dominance are captured.
+
+- **Overall & Mean Ratings (NPS)**
+
+Statistical aggregation of overall customer ratings (out of 10), utilizing total mean averages and boxplot distribution visualizations.
+
+Besides mean averages, boxplots were chosen to analyze the distribution and spread of customer experiences. This method visualizes the consistency of an airline's service, revealing the true "floor" and "ceiling" of the EU budget aviation market.
+
+- **WordCloud Analysis**
+
+To formulate actionable operational strategies based on actual customer reactions, text-mining of positive and negative reviews was used to generate frequency-based visual representations of core vocabulary. Word clouds were selected as an efficient tool to extract the most recurring topics from unstructured text, enabling the rapid identification of key pain points and positive differentiators.
+
+- **Sentiment Analysis - Top-Down**
+
+Application of the NRC Emotion Lexicon to the review dataset to categorize text into specific top-down emotional vectors (Anger, Fear, Trust, Joy, Sadness, Anticipation, Surprise, Disgust). By measuring metrics like "Fear" (anxiety/stress) and "Anger" (frustration), we can design highly targeted service interventions that address the emotional state of the target demographic.
+
+- **Emotional Positioning (MDS Map)**
+
+To finalize a market entry strategy, we must understand the structural gaps in the competitive landscape. MDS was chosen because it translates complex, multi-variable emotional data into a clear map. Airlines plotted closely together share identical customer emotional profiles. This method visualizes the "white space" in the market, allowing AeroValue to position itself away from the toxic elements of the budget sector.
+
+# 5. Key Findings
+
+Loading packages
+
+```{r}
+#install.packages("gtrendsR")
+library (gtrendsR)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+## 5.1 Web Trend Low-Cost Airlines Search - Line Chart for Interest by Airline
+
+*Market Selection Rationale:* 
+
+We track Great Britain (easyJet, Jet2), Ireland (Ryanair), and Norway (Norwegian Air) to accurately gauge rival brand visibility.
+
+Spain, France, Germany, and Italy represent Europe's highest-volume short-haul markets. Capturing search intent in these massive economies is essential for AeroValue's launch and direct competition.
+
+```{r}
+# Define the competitors and the core EU markets
+#airlines <- c("Ryanair", "easyJet", "Norwegian Air", "Jet2")
+
+# GB = UK, IE = Ireland, NO = Norway, ES = Spain, FR = France, DE = Germany, IT = Italy
+#countries <-c("ES", "FR", "DE", "IT")
+
+# Create an empty list to store the data
+#trends_list <- list()
+
+# Loop through each country to bypass Google API rate limits
+#for (country in countries) {
+  #print(paste("Fetching data for:", country, "..."))
+  
+  # The tryCatch block to ensure the script won't crash
+  #res <- tryCatch({
+    #gtrends(
+      #keyword = airlines, 
+      #geo = country, 
+      #time = "2016-01-01 2026-01-01" )}, error = function(e) {
+   # message(paste("--> API Error fetching:", country))
+    #return(NULL)
+  #})
+  
+  # If the data pull works, save it to the list
+ # if (!is.null(res) && !is.null(res$interest_over_time)) {
+  #  trends_list[[country]] <- res$interest_over_time
+  #  print(paste("--> Success for:", country))
+ # }
+  
+  # A 15-second pause between requests so Google doesn't block my IP
+  #Sys.sleep(15) }
+
+# Combine the data and clean the "<1" values Google sometimes returns
+#trends_data_combined <- bind_rows(trends_list)
+
+#trends_data_cleaned <- trends_data_combined %>%
+ # mutate(
+ #   hits = ifelse(hits == "<1", "0", hits),
+ #   hits = as.numeric(hits)
+ # )
+
+# Calculate the average search interest across chosen markets
+#trends_summary <- trends_data_cleaned %>%
+ # group_by(date, keyword) %>%
+ # summarise(avg_hits = mean(hits, na.rm = TRUE), .groups = 'drop')
+
+# Generate the visualization
+#ggplot(trends_summary, aes(x = date, y = avg_hits, color = keyword)) +
+ # geom_line(linewidth = 0.8) +
+ # theme_minimal() +
+ # labs(
+  #  title = "Search history of major low-cost airlines in EU",
+   # subtitle = "Average search interest across major markets in EU",
+   # x = "Year",
+  #  y = "Average Search Interest Index",
+  #  color = "Airline"
+ # ) +
+ # scale_color_brewer(palette = "Set1") + 
+#  theme(
+ #   legend.position = "bottom",
+ #   plot.title = element_text(face = "bold", size = 14),
+ #   plot.subtitle = element_text(size = 10, color = "darkgray")
+ # )
+```
+
+We tried to run the above code chunk but got blocked. Since Ryanair, easyJet, and Jet2 all have massive operational hubs and customer bases in the UK (with Jet2 being specifically headquartered there and dominating regional UK airports), the UK search data could act as the perfect representative sample for the broader European low-cost market.
+
+```{r}
+web.trends.low.cost <-gtrends (c("Ryanair", 
+                                 "easyJet", 
+                                 "Norwegian Air", 
+                                 "Jet2"),
+                                     gprop = "web", geo = "GB",
+                                     time = "2016-01-01 2026-01-01")
+
+plot (web.trends.low.cost)
+```
+
+**Observations**
+
+- easyJet (red) and Ryanair (purple) consistently dominate search interest in the last 10 years. They are the benchmark for low-cost travel in the UK/EU, meaning their brand awareness is universal. Anyone entering this market is competing against their massive visibility.
+
+- In early 2020 the COVID-19 hit, freezing the travel industry. More importantly, the strong rebound from 2022 onward proves to AeroValue that the demand for low-cost European travel has fully recovered and stabilized.
+
+- Jet2 (green) shows incredibly sharp spikes. This indicates a highly seasonal search intent such as summer holiday bookings. Notably, after 2022, their peaks are competing closely with the search volumes of the top two giants, showing they are growing challenger.
+
+- Norwegian Air maintains a very low search profile and flat-line after 2020. This suggests they have significantly reduced their regional footprint (UK) compared to the other three.
+ 
+*The key question for the rest of this analysis is:* Does this high search volume actually equal high customer satisfaction, or is there a gap in the market for AeroValue to exploit?
+
+## 5.2 Developing a Web Crawler
+
+What makes a customer choose one low-cost airline over another? To understand the real impact of price, punctuality, customer service, baggage rules, and digital experience, we analyzed real passenger reviews from AirlineQuality.com.
+
+Load the libraries
+
+```{r}
+# install.packages(c("rvest", "dplyr", "stringr", "readr", "httr"))
+
+library(rvest)
+library(dplyr)
+library(stringr)
+library(readr)
+library(httr)
+```
+
+### 5.2.1 Scarp the review text 
+
+(100 texts in stead of 500 texts for preventing from being blocked by Google) for all chosen airlines: Ryanair, easyJet, Norwegian Air, and Jet2.com
+
+```{r}
+# Initialize the master dataframe
+Airline.SkyTraxFull = data.frame()
+
+# Airline information 
+airline = c("ryanair", "easyjet", "norwegian", "jet2-com")
+airname = c("Ryanair", "easyJet", "NorwegianAir", "Jet2")
+airnum = length(airline)
+air = 1
+
+# Loop through each airline
+while (air <= airnum) {
+  
+  airline2 = paste0(airline[air], "/page/")
+  page = 1
+  endpage = 10
+
+  # Base URL
+  link1 = paste0("https://www.airlinequality.com/airline-reviews/", airline2)
+
+  # Iterate through pages (1 to 10)
+  while (page <= endpage) {
+    
+    link = paste0(link1, page, "/?sortby=post_date%3ADesc&pagesize=100")
+    
+    # Try-catch to avoid crashes on errors
+    tryCatch({
+      # Extracting data
+      Review.Title.Airline <- read_html(link) %>%
+        html_nodes(".comp_media-review-rated") %>%
+        html_node(".text_header") %>%
+        html_text()
+      
+      Review.Text.Airline <- read_html(link) %>%
+        html_nodes(".comp_media-review-rated") %>%
+        html_node(".text_content") %>%
+        html_text()
+      
+      Rating.Airline <- read_html(link) %>%
+        html_nodes(".comp_media-review-rated") %>%
+        html_nodes(".rating-10") %>%
+        html_node("span:nth-child(1)") %>%
+        html_text()
+      
+      Seattype.Airline <- read_html(link) %>%
+        html_nodes(".querylist") %>%
+        html_nodes(xpath = ".//article[contains(@class, 'comp comp_media-review-rated list-item media position-content review-')]") %>%
+        html_node(".cabin_flown+ .review-value") %>%
+        html_text()
+      
+      Aircraft.Airline <- read_html(link) %>%
+        html_nodes(".querylist") %>%
+        html_nodes(xpath = ".//article[contains(@class, 'comp comp_media-review-rated list-item media position-content review-')]") %>%
+        html_node(".aircraft+ .review-value") %>%
+        html_text()
+      
+      Route.Airline <- read_html(link) %>%
+        html_nodes(".querylist") %>%
+        html_nodes(xpath = ".//article[contains(@class, 'comp comp_media-review-rated list-item media position-content review-')]") %>%
+        html_node(".route+ .review-value") %>%
+        html_text()
+      
+      Travellertype.Airline <- read_html(link) %>% 
+        html_nodes(".querylist") %>%
+        html_nodes(xpath = ".//article[contains(@class, 'comp comp_media-review-rated list-item media position-content review-')]") %>%
+        html_node(".type_of_traveller+ .review-value") %>%
+        html_text() %>%
+        unlist()
+      
+      # Ensure all vectors are of equal length
+      max_length <- max(length(Review.Title.Airline), length(Review.Text.Airline), length(Rating.Airline), length(Seattype.Airline), length(Aircraft.Airline), length(Route.Airline), length(Travellertype.Airline), length(Service.Airline), length(Price.Airline))
+      
+      pad_na <- function(vec, length_out) {
+        length(vec) <- length_out
+        vec
+      }
+      
+      Airline.Skytrax <- data.frame(
+        Review.Title.Airline = pad_na(Review.Title.Airline, max_length),
+        Review.Text.Airline = pad_na(Review.Text.Airline, max_length),
+        Rating.Airline = pad_na(Rating.Airline, max_length),
+        Seat.Type.Airline = pad_na(Seattype.Airline, max_length),
+        Airline.Aircraft = pad_na(Aircraft.Airline, max_length),
+        Route.Airline = pad_na(Route.Airline, max_length),
+        Traveller.Type.Airline = pad_na(Travellertype.Airline, max_length)
+      )
+      
+      # Combine data
+      Airline.SkyTraxFull = rbind(Airline.SkyTraxFull, Airline.Skytrax)
+      page = page + 1
+      
+      # Pause to avoid getting blocked
+      Sys.sleep(1.5)
+      
+    }, error = function(e) {
+      message(paste("Error on page", page, "for airline:", airline[air]))
+    })
+  }
+  
+  # Split into satisfied and dissatisfied customers
+  AirlineSkytrax.Satisfied =  Airline.SkyTraxFull %>% filter(Rating.Airline >= 8)
+  AirlineSkytrax.Dissatisfied = Airline.SkyTraxFull %>% filter(Rating.Airline <= 7)
+  
+  # Save results with dynamic naming
+  assign(paste(airname[air], ".SkyTraxFull", sep = ""), Airline.SkyTraxFull)
+  assign(paste(airname[air], ".Satisfied", sep = ""), AirlineSkytrax.Satisfied)
+  assign(paste(airname[air], ".Dissatisfied", sep = ""), AirlineSkytrax.Dissatisfied)
+  
+  # Save to CSV for easy access
+  write.csv(Airline.SkyTraxFull, paste0(airname[air], "_SkyTraxGA.csv"), row.names = FALSE)
+  
+  air = air + 1
+}
+
+```
+
+Data frame for satisfied and dissatisfied customers 
+
+```{r}
+Airlines <- c("Ryanair", "easyJet", "NorwegianAir", "Jet2")
+
+Number.Reviews <- c(
+  nrow (Ryanair.SkyTraxFull),
+  nrow (easyJet.SkyTraxFull),
+  nrow (NorwegianAir.SkyTraxFull),
+  nrow (Jet2.SkyTraxFull)
+)
+
+Number.Dissatisfied <- c (
+  nrow (Ryanair.Dissatisfied),
+  nrow (easyJet.Dissatisfied),
+  nrow (NorwegianAir.Dissatisfied),
+  nrow (Jet2.Dissatisfied)
+)
+
+Satisfaction.Rates <- tibble (Airline = Airlines, N_Reviews = Number.Reviews, N_Dissatisfied = Number.Dissatisfied)
+
+Satisfaction.Rates <- Satisfaction.Rates %>%
+  mutate (N_Satisfied = N_Reviews - N_Dissatisfied) %>%
+  mutate (Share_Satisfied = N_Satisfied/N_Reviews, Share_Dissatisfied = N_Dissatisfied/N_Reviews)
+
+glimpse (Satisfaction.Rates)
+```
+
+Visualize the findings
+
+```{r}
+#Share of dissatisfied customers
+ggplot (Satisfaction.Rates, aes (x = reorder (Airline, Share_Dissatisfied), y = Share_Dissatisfied))+
+  geom_bar (stat = "identity", fill = "red")+
+  labs (y = "Share of Dissatisfied Users",
+        x= "Airline",
+        title = "Rate of Dissatisfied User Reviews per Airline")+
+  ylim (0,1)+
+  coord_flip()+
+  theme_minimal()
+
+
+#Share of satisfied customers
+ggplot (Satisfaction.Rates, aes (x = reorder (Airline, Share_Satisfied), y = Share_Satisfied))+
+  geom_bar (stat = "identity", fill = "darkgreen")+
+  labs (y = "Share of Satisfied Users",
+        x= "Airline",
+        title = "Rate of Satisfied User Reviews per Airline")+
+  ylim (0,1)+
+  coord_flip()+
+  theme_minimal()
+```
+
+**Observations**
+
+- Across all four competitors, dissatisfaction exceeds 81%. This perfectly validates the founders' belief that European travellers are highly unhappy with current low-cost options.
+
+- Ryanair is at the bottom baseline (~90% dissatisfied), while Jet2 is the market leader but they still leave 82% of their customers unhappy.
+
+- The bar for customer satisfaction in the EU low-cost market is incredibly low. AeroValue doesn't need to offer luxury to differentiate itself. They simply needs to identify and eliminate the specific pain points driving Ryanair and easyJet's massive dissatisfaction rates.
+
+## 5.3 Create Word Cloud
+
+Identify pain-points and what it means for AeroValue
+
+load the required libraries
+
+```{r}
+#install.packages("tidytext")
+library (tidytext)
+#install.packages("wordcloud")
+library (wordcloud)
+#install.packages("RColorBrewer")
+library(RColorBrewer)
+```
+
+### 5.3.1 Ryanair
+
+```{r}
+library(dplyr)
+library(tidytext)
+library(tidyr)
+library(wordcloud)
+library(RColorBrewer)
+#Define the color palettes for satisfied and dissatisfied reviews
+pal_satisfied <- brewer.pal(9, "Greens")
+pal_dissatisfied <- brewer.pal(8, "Dark2")
+
+#Satisfied reviews
+tidy_keywords.satisfied.RA <- Ryanair.Satisfied %>%
+  unnest_tokens(bigram, Review.Text.Airline, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE) %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Generate the word cloud
+with(tidy_keywords.satisfied.RA,
+     wordcloud(bigram, n, min.freq = 2, max.words = 30, random.order = FALSE, colors = pal_satisfied))
+
+# Dissatisfied reviews
+tidy_keywords.dissatisfied.RA <- Ryanair.Dissatisfied %>%
+  unnest_tokens(bigram, Review.Text.Airline, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE) %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Generate the word cloud
+with(tidy_keywords.dissatisfied.RA,
+     wordcloud(bigram, n, min.freq = 2, max.words = 30, random.order = FALSE, colors = pal_dissatisfied))
+```
+
+**Observations**
+
+*Ryanair* - Positive factors
+
+- "cabin crew" is the largest phrase. Even for the airline with the highest overall dissatisfaction rate, friendly and efficient in-flight staff is the biggest driver of a 5-star review.
+
+- Phrases like "priority boarding" and "quick check" appear in the background. This shows that when Ryanair's operational systems work smoothly and passengers get the perks they paid for, they leave highly satisfied.
+
+- "low cost" is there, reinforcing that price gets them in the door.
+
+*Takeaway for AeroValue:* You cannot build a loyal customer base purely on cheap tickets. The data proves that across the board, outstanding cabin crew is the universal baseline for a positive low-cost experience. AeroValue must train front-line staff a core value of their brand.
+
+*Ryanair* - Negative factors
+
+- Words like "boarding pass," "online check," and specific phrases like "55 euros" and "pay 55" highlights Ryanair's most hated policy. Passengers feel scammed by extra fees for forgetting to print their boarding pass or failing the digital check-in process.
+
+- "customer service" is the largest text, accompanied by "ryanair staff." In this context, it shows that staff are perceived as enforcers of these rules rather than helpers, leading to high frustration.
+
+- "hand luggage," "cabin bag," and "pay extra" show that aggressive enforcement of baggage sizing at the gate is a massive pain point.
+
+- "stansted airport" and "london stansted" are there, indicating that operations or staff interactions at this specific hub are a major source of negative reviews.
+
+*Takeaway for AeroValue:* The data clearly shows what not to do. AeroValue can instantly win over Ryanair's customers by eliminating fees (like charging 55 euros for a printed boarding pass) and offering transparent, stress-free baggage rules. Trust is built by not tricking the customer at the airport.
+
+### 5.3.2 easyJet
+
+```{r}
+#Satisfied reviews
+tidy_keywords.satisfied.EJ <- easyJet.Satisfied %>%
+  unnest_tokens(bigram, Review.Text.Airline, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE) %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Generate the word cloud
+with(tidy_keywords.satisfied.EJ,
+     wordcloud(bigram, n, min.freq = 2, max.words = 30, random.order = FALSE, colors = pal_satisfied))
+
+# Dissatisfied reviews 
+tidy_keywords.dissatisfied.EJ <- easyJet.Dissatisfied %>%
+  unnest_tokens(bigram, Review.Text.Airline, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE) %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Generate the word cloud
+with(tidy_keywords.dissatisfied.EJ,
+     wordcloud(bigram, n, min.freq = 2, max.words = 30, random.order = FALSE, colors = pal_dissatisfied))
+```
+
+**Observations**
+
+*easyJet* - Positive factors
+
+- easyJet effectively drives satisfaction through highly praised customer service ("cabin crew") and efficient airport logistics ("speedy boarding") => AeroValue must emulate this staff warmth and operational smoothness while deploying proactive digital communication to elaborate the ground service operation.
+
+*easyJet* - Negative factors
+
+- Complaints about "customer service" and "ground staff" dominate, showing passengers feel abandoned during disruptions.
+
+- Words like "pay extra," "hand luggage," and "cabin bag" prove passengers feel bothered by strict gate fees.
+
+- The apprearance of "2 hours," "3 hours," and "5 hours" highlights severe delays. "Online check" and "boarding pass" point to poor digital systems that often trap passengers into paying airport printing fees.
+
+*Takeaway for AeroValue:* AeroValue can capture market share by focusing on transparent pricing, a frictionless app (easy check-in), and empathetic ground staff empowered to actually help passengers.
+
+### 5.3.3 Norwegian Air
+
+```{r}
+#Satisfied reviews
+tidy_keywords.satisfied.NA <- NorwegianAir.Satisfied %>%
+  unnest_tokens(bigram, Review.Text.Airline, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE) %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Generate the word cloud
+with(tidy_keywords.satisfied.NA,
+     wordcloud(bigram, n, min.freq = 2, max.words = 30, random.order = FALSE, colors = pal_satisfied))
+
+# Dissatisfied reviews 
+tidy_keywords.dissatisfied.NA <- NorwegianAir.Dissatisfied %>%
+  unnest_tokens(bigram, Review.Text.Airline, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE) %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Generate the word cloud
+with(tidy_keywords.dissatisfied.NA,
+     wordcloud(bigram, n, min.freq = 2, max.words = 30, random.order = FALSE, colors = pal_dissatisfied))
+```
+
+**Observations**
+
+*Norweigain Air* - Positive factors
+
+- Just like the others, "cabin crew" is highly prominent, reinforcing that excellent human interaction is the baseline for satisfaction across the entire low-cost industry.
+
+- If we look closely at the fainter text "free wifi," "inflight entertainment," and "premium economy." Norwegian satisfies customers by offering high-end perks that simply do not exist on Ryanair or easyJet.
+
+- The mention of "boeing 787" indicates that passengers highly value modern, comfortable, and quiet aircraft.
+
+*Takeaway for AeroValue:* Norwegian proves that you can be a "low cost" airline while still offering a high-quality product. AeroValue can differentiate itself by investing heavily in the digital experience like offering free basic Wi-Fi or modern in-flight entertainment via a mobile app—to make passengers feel like they are flying a premium service at a budget price.
+
+*Norweigain Air* - Negative factors
+
+- "customer service" is the largest meaningful phrase, along with "ground staff". While their in-flight product is often valued, this shows that when disruptions occur, their ground support and customer service systems fail to support passengers, leading to massive frustration.
+
+- Just like Ryanair and easyJet, phrases like "hand luggage," "cabin bag," and "pay extra" are mentioned heavily. This proves that aggressive baggage policies are universally hated across the entire low-cost sector, regardless of the airline's overall brand.
+
+- The time-frames "2 hours," "3 hours," "4 hours," and "5 hours" highlights that massive punctuality failures might erase the perks generated by their modern aircraft and free Wi-Fi.
+
+- "online check" and "boarding passes" show that their digital check-in process still causes unnecessary stress and potential extra fees at the airport.
+
+*Takeaway for AeroValue:* A comfortable plane is not enough to save you if your operations fail. Norwegian's data proves that even a "premium" low-cost airline will face severe dissatisfaction if they have major delays, unhelpful ground staff, and hidden baggage fees. AeroValue must ensure their operational reliability and empathetic customer support match their in-flight experience to win the market.
+
+### 5.3.4 Jet2
+
+```{r}
+#Satisfied reviews
+tidy_keywords.satisfied.J2 <- Jet2.Satisfied %>%
+  unnest_tokens(bigram, Review.Text.Airline, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE) %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Generate the word cloud
+with(tidy_keywords.satisfied.J2,
+     wordcloud(bigram, n, min.freq = 2, max.words = 30, random.order = FALSE, colors = pal_satisfied))
+
+# Dissatisfied reviews 
+tidy_keywords.dissatisfied.J2 <- Jet2.Dissatisfied %>%
+  unnest_tokens(bigram, Review.Text.Airline, token = "ngrams", n = 2) %>%
+  separate(bigram, c("word1", "word2"), sep = " ") %>%
+  filter(!word1 %in% stop_words$word,
+         !word2 %in% stop_words$word) %>%
+  count(word1, word2, sort = TRUE) %>%
+  unite(bigram, word1, word2, sep = " ")
+
+# Generate the word cloud
+with(tidy_keywords.dissatisfied.J2,
+     wordcloud(bigram, n, min.freq = 2, max.words = 30, random.order = FALSE, colors = pal_dissatisfied))
+```
+
+**Observations**
+
+*Jet2* - Positive factors
+
+- The appearance of "leeds bradford" is unique. Unlike Ryanair and easyJet, which heavily rely on chaotic hubs like Stansted and Gatwick, Jet2 builds massive loyalty by operating efficiently out of regional airports. Passengers love the convenience of flying locally.
+
+- Words like "speedy boarding" and "bag drop" show that Jet2's pre-flight logistics are a major source of joy. They have taken care the airport flow, meaning passengers start their vacation stress-free before they board on the plane.
+
+*Jet2* - Negative factors
+
+- There are still those words "customer service," "2 hours," "hand luggage," "pay extra", they are identical to the complaints for Ryanair, easyJet, and Norwegian.
+
+- Even the market leader Jet2 with the highest satisfaction rate falls into the same delay thing, strict baggage rules, and overwhelmed ground staff. This proves to the management team that the pain points in this industry are structural.
+
+- From our earlier data that Jet2 has the fewest dissatisfied customers (81%). This cloud tells us that when they fail, they fail the same way everyone else does. They just manage to let it happen less often.
+
+*Takeaway for AeroValue:* AeroValue does not need to solve a unique customer problem to beat Jet2. The founders are exactly right: customers hate hidden fees and operational disruptions. AeroValue simply needs to take the universal weaknesses of the low-cost model and handle them with transparency and empathy.
+
+## 5.5 Competitor Analysis (based on mean NPS)
+
+Import the data set
+
+```{r}
+library(dplyr) 
+# Import each CSV
+Ryanair_data <- read.csv("Ryanair_SkyTraxGA.csv") %>% 
+  mutate(Airline = "Ryanair")
+
+easyJet_data <- read.csv("easyJet_SkyTraxGA.csv") %>% 
+  mutate(Airline = "easyJet")
+
+NorwegianAir_data <- read.csv("NorwegianAir_SkyTraxGA.csv") %>% 
+  mutate(Airline = "Norwegian Air")
+
+jet2_data <- read.csv("Jet2_SkyTraxGA.csv") %>% 
+  mutate(Airline = "Jet2")
+
+# Combine all 4 data-sets into one data-frame
+Airline_Reviews <- bind_rows(Ryanair_data, easyJet_data, NorwegianAir_data, jet2_data)
+
+rm(Ryanair_data, easyJet_data, NorwegianAir_data, jet2_data)
+
+summary(Airline_Reviews)
+
+```
+
+### 5.5.1 Bar Chart for Mean Rating
+
+```{r}
+#Calculate mean
+meanrating.airline <- Airline_Reviews %>%
+  group_by(Airline)%>%
+  summarise (MeanRating = mean (Rating.Airline, na.rm = TRUE))
+
+#bar chart
+ggplot (meanrating.airline, aes (x = reorder (Airline, MeanRating), y = MeanRating))+
+  geom_col(fill = "skyblue")+
+  labs (
+    title = "Mean Rating, by Airline",
+    x = "Airlines",
+    y = "Mean Rating")+
+  geom_text (aes (label = round (MeanRating, 2)),
+             size = 3, colour = "white",
+             position = position_stack(vjust = 0.5))+
+  theme (axis.text.x =  element_text(angle = 90, hjust =1))
+```
+
+**Observations**
+
+- Jet2 dominates the pack with a mean rating of 4.3. This confirms they are the standard for customer satisfaction in the low-cost space and the primary benchmark AeroValue should study.
+
+- Ryanair places firmly at the bottom with a 2.98 rating. This completely validates the founders' belief that customers are deeply dissatisfied with existing options. Ryanair's heavy fee and rigid model severely damages their overall brand perception.
+
+- EasyJet (3.48) and Norwegian Air (3.89) place in the middle. They are better than Ryanair, but they are still low-rated.
+
+*Strategic Takeaway for AeroValue:* Because AeroValue's goal is to offer better perceived value at a comparable low-cost price level, this chart proves that the barrier to entry is actually quite low. To immediately disrupt the market, AeroValue simply needs to clear the 3.5 star standard by avoiding the massive operational failures and hidden fees of Ryanair and easyJet, while actively striving for Jet2's 4.3 star level of service.
+
+### 5.5.2 Create a Box Plot for Number of Reviews
+
+```{r}
+library(ggthemes)
+Airline_Reviews %>%
+  ggplot (aes (x = Airline, y = Rating.Airline, fill = Airline)) +
+  geom_boxplot() +  # Add the boxplot
+  geom_jitter (width = 0.05, alpha = 0.05) + # Add jittered points for individual ratings
+  scale_fill_tableau (palette = "Tableau 20")+ # Use a Tableau color palette
+  theme (axis.text.x = element_text(angle=90))+ # Rotate x-axis labels for better readability
+  ggtitle ("Boxplots of Overall Rating, by Airline")
+```
+
+**Observations**
+
+- While easyJet, Jet2, and Norwegian have tall boxes reaching up to the 7-8 range (meaning they frequently deliver great experiences), almost 75% of Ryanair's ratings are below a 4, meaning they are consistently incapable of delivering a high-rated experience.
+
+- Look at the black dots. For airlines like Jet2 and Norwegian, passengers rarely give middle scores (like a 4, 5, or 6). They either give a 1 star review because of a disruption, or an 8-10 because the flight went perfectly. It is an emotionally polarized market.
+
+- Look at black line inside each box representing the median. Even for the market leader Jet2, the median places at a 2 out of 10, and for easyJet and Ryanair, it sits at a 1. This visually proves to AeroValue's founding team that absolute failure is the most common customer baseline in this industry.
+
+*Strategic Takeaway for AeroValue:* This box plot proves that nobody in the EU low-cost market is providing a consistently decent experience. Competitors either fail or succeed completely. AeroValue can win the market not by pursuing 10 star rating but by raising the floor, focusing on turning those 1 star experiences into acceptable 5 star standard experiences through reliability.
+
+## 5.6 Sentiment Analysis 
+
+Load the required packages
+
+```{r}
+# Install remotes
+#install.packages("remotes")
+
+# Install ldatuning from GitHub
+#remotes::install_github("nikita-moor/ldatuning")
+
+#remotes::install_github("krgitcode/vader")
+
+# Load the package
+library(ldatuning)
+
+# Check source
+#packageDescription("ldatuning")$URL
+```
+
+Pack 02
+
+```{r}
+#install.packages(c("tidyverse","RColorBrewer","scales","ggthemes", "circlize","tidytext", "textdata","NLP", "tm", "slam", "ldatuning","text2vec", "topicmodels","caTools","randomForest", "glmnet","Matrix"))
+
+library (tidyverse)
+
+library (RColorBrewer)
+library (scales)
+
+library (ggthemes)
+library (circlize)
+
+library (tidytext)
+library (textdata)
+library (vader)
+library (NLP)
+
+library (tm)
+library (slam)
+library (ldatuning)
+library (text2vec)
+library (topicmodels)
+
+library (caTools)
+library (randomForest)
+
+library (glmnet)
+library (Matrix)
+```
+
+### 5.6.1 Top-down Analysis
+
+Conduct a dictionary-based sentiment analysis using the NRC Emotion Lexicon and text-mining, analysing overall sentiment distribution, emotional patterns (e.g., anger, trust,joy, fear) and differences between competitor airlines.
+
+Load emotion dictionary 
+
+```{r}
+library(dplyr)
+#install.packages("syuzhet")
+library(syuzhet)
+
+print("Bypassing the broken dictionary...")
+
+emotions <- get_nrc_sentiment(Airline_Reviews$Review.Text.Airline)
+
+AirlineReviews_Sentiment <- cbind(Airline_Reviews, emotions)
+
+print("Done! You beat the bug.")
+head(AirlineReviews_Sentiment)
+```
+
+Calculate mean emotional level per airline 
+
+```{r}
+AirlineReviews_Sentiment_Means <- AirlineReviews_Sentiment %>%
+  group_by(Airline) %>%
+  summarise(
+    MeanAnger = mean (anger),
+    MeanAnticipation = mean (anticipation),
+    MeanDisgust = mean (disgust),
+    MeanFear = mean (fear),
+    MeanJoy = mean (joy),
+    MeanNegative = mean (negative),
+    MeanPositive = mean (positive),
+    MeanSadness = mean (sadness),
+    MeanTrust = mean (trust),
+    MeanSurprise = mean (surprise))%>%
+  mutate (MeanSentiment = MeanPositive- MeanNegative)
+
+```
+
+### 5.6.2 Positive Emotions by Airline
+
+```{r}
+#Positive emotions: joy, trust
+AirlineReviews_PosMeansWide <- AirlineReviews_Sentiment_Means %>%
+  select (Airline, MeanJoy, MeanTrust) %>%
+  pivot_longer (cols = starts_with("Mean"),
+                names_to = "variable",
+                values_to = "value")
+
+#visualize
+ggplot (AirlineReviews_PosMeansWide, aes (x= Airline, y = value, fill = Airline))+
+  geom_col ()+
+  scale_fill_tableau(palette = "Tableau 20") +
+  geom_text (aes (label = round (value, digits = 2)),
+             size = 2, colour = "white",
+             position = position_stack(vjust = 0.5))+
+  theme (axis.text.x = element_text(angle = 90))+
+  facet_wrap(~variable, ncol = 2)+
+  ggtitle ("Mean Values of Positive Emotions by Airline")
+```
+
+**Observations**
+
+- Across all four airlines, "trust" scores ranging from 4.18 to 4.45, are significantly higher than "joy" scores (1.79 to 2.12). This shows that while these airlines generally succeed in building basic trust (getting passengers safely from A to B), they hardly deliver a really delightful or "joyful" customer experience.
+
+- Norwegian Air leads the competition in Trust (4.45). This makes perfect sense with our earlier word clouds: their investment in modern aircraft (Boeing 787) and upfront perks (free Wi-Fi) makes passengers feel secure and respected.
+
+- Jet2 makes to the top for Joy (2.12). Because as shown earlier Jet2 dominates in customer satisfaction, this proves that "joy" in the low-cost sector isn't about luxury but about friendly service that removes the typical stress of budget travel.
+
+- Ryanair ranks the last in both Joy (1.79) and Trust (4.18). Their low trust score quantifies the damage caused by their baggage fees and aggressive boarding pass penalties that we saw in the pain point analysis.
+
+*Takeaway for AeroValue:* To define a competitive positioning strategy, AeroValue must view Trust as a mandatory foundation, built through pricing transparency (no hidden fees like Ryanair). However, the real opportunity lies in the Joy metric. Because the entire industry scores incredibly low in Joy (hardly reaching 2.0), AeroValue can differentiate itself  by investing heavily in empathetic customer service and frictionless digital experiences, turning a traditionally stressful budget flight into a pleasant one.
+
+### 5.6.3 Negative Emotions by Airline
+
+```{r}
+#Negative emotions: anger, disgust, fear, sadness
+AirlineReviews_NegMeansWide <- AirlineReviews_Sentiment_Means %>%
+  select (Airline, MeanAnger, MeanDisgust, MeanFear, MeanSadness) %>%
+  pivot_longer (cols = starts_with("Mean"),
+                names_to = "variable",
+                values_to = "value")
+
+#visualize
+ggplot (AirlineReviews_NegMeansWide, aes (x= Airline, y = value, fill = Airline))+
+  geom_col ()+
+  scale_fill_tableau(palette = "Tableau 20") +
+  geom_text (aes (label = round (value, digits = 2)),
+             size = 2, colour = "white",
+             position = position_stack(vjust = 0.5))+
+  theme (axis.text.x = element_text(angle = 90))+
+  facet_wrap(~variable, ncol = 2)+
+  ggtitle ("Mean Values of Negative Emotions by Airline")
+```
+
+**Observations**
+
+- Jet2 consistently scores lowest in every single category (Anger, Disgust, Fear, and Sadness). Their 4.3 overall rating is because they successfully minimize intense negative experiences for their passengers.
+
+- Ryanair again leads in Anger (1.38). This also aligns with our word cloud data showing that passengers feel actively penalized by aggressive fees (55 eur boarding pass charge) and unhelpful staff interactions.
+
+- easyJet and Ryanair are equally at the top in Fear (1.57). In text-mining airline reviews, "Fear" translates directly to anxiety and stress. This quantifies the stress passengers feel regarding massive delays, lost luggage, and the threat of unexpected gate fees.
+
+- Surprisingly, Sadness is the highest-scored negative emotion across all four airlines (ranging from 1.76 to 1.82). In this context, sadness reflects deep disappointment such as missed family events, ruined holidays due to massive delays, and a general feeling of being let down by the airline.
+
+*Strategic Takeaway for AeroValue:* To win this market, AeroValue must view its operations through the lens of anxiety reduction. Because competitors like Ryanair and easyJet score incredibly high in Anger and Fear (stress), AeroValue's marketing and operational strategy should focus entirely on peace of mind. Transparent pricing removes the Anger of hidden fees, while reliable communication and an easy-to-use app remove the Fear of check-in failures and delays.
+
+### 5.6.4 Neutral Emotions by Airline
+
+```{r}
+# Neutral/Ambiguous emotions: anticipation, surprise
+AirlineReviews_NeuMeansWide <- AirlineReviews_Sentiment_Means %>%
+  select(Airline, MeanAnticipation, MeanSurprise) %>%
+  pivot_longer(cols = starts_with("Mean"),
+               names_to = "variable",
+               values_to = "value")
+
+# visualize
+ggplot(AirlineReviews_NeuMeansWide, aes(x = Airline, y = value, fill = Airline)) +
+  geom_col() +
+  scale_fill_tableau(palette = "Tableau 20") +
+  geom_text(aes(label = round(value, digits = 2)),
+            size = 2, colour = "white",
+            position = position_stack(vjust = 0.5)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  facet_wrap(~variable, ncol = 2) +
+  ggtitle("Mean Values of Neutral/Ambiguous Emotions by Airline")
+```
+
+**Observations**
+
+- All four airlines score high in Anticipation (around 3.0). This makes perfect sense for the travel industry, passengers are naturally looking forward to their holidays or trips, regardless of which airline they fly.
+
+- Jet2 has the lowest score for Surprise (1.61). In the low-cost airline industry, "surprises" are rarely good, they usually mean unexpected delays, sudden gate fees, or lost bags. Jet2's low surprise score explains perfectly with their high Trust score.
+
+- Ryanair and Norwegian Air have highest Surprise scores (~1.7). For Ryanair, this likely reflects the negative shock of hidden fees. For Norwegian, it might reflect the positive shock of finding free Wi-Fi on a budget flight.
+
+*Strategic Takeaway for AeroValue:* In the low-cost aviation market, boring might be great. AeroValue's operational goal should be to minimize "Surprise". Passengers want a highly predictable, perfectly standardized experience where the price they see online is exactly what they pay, and the flight leaves when it says it will.
+
+### 5.6.5 General
+
+```{r}
+AirlineReviews_SentimentMeansWide <- AirlineReviews_Sentiment_Means %>%
+  select (Airline, MeanPositive, MeanNegative, MeanSentiment) %>%
+  pivot_longer (cols = starts_with("Mean"),
+                names_to = "variable",
+                values_to = "value")
+
+#visualize
+ggplot (AirlineReviews_SentimentMeansWide, aes (x= Airline, y = value, fill = Airline))+
+  geom_col ()+
+  scale_fill_tableau(palette = "Tableau 20") +
+  geom_text (aes (label = round (value, digits = 2)),
+             size = 2, colour = "white",
+             position = position_stack(vjust = 0.5))+
+  theme (axis.text.x = element_text(angle = 90))+
+  facet_wrap(~variable, ncol = 2)+
+  ggtitle ("Mean Values of Sentiment Emotions by Airline")
+```
+
+**Observations**
+
+- The MeanSentiment chart acts as the overall net score. Jet2 and Norwegian Air lead the market. They are the ones successfully balancing high positive emotion with the lowest possible negative emotion.
+
+- Ryanair places last with a net sentiment of just 2.01 and also generates the highest negative sentiment (3.64) in the entire industry.
+
+- Across all airlines, the absolute MeanPositive scores (~5.6 - 5.9) are significantly higher than the MeanNegative scores (~3.3 - 3.6). This is common in travel, even angry passengers often use positive words to describe baseline expectations (e.g., "The good news is the safe flight eventually landed").
+
+*Strategic Takeaway for AeroValue:* Overall customer experience is defined by the net sentiment gap. Because positive scores are high across the entire budget industry (thanks to friendly cabin crews), AeroValue cannot win just by being "positive". Agian, they will win the overall market share by strictly driving down the MeanNegative score, eliminating the severe delays and hidden fees that drag Ryanair and easyJet down.
+
+### 5.6.5 Traveller Type Analysis
+
+Now look at easyJet and Ryanair, the two most problematic airlines to identify who is feeling the most pain from the hidden fees and operational failures.
+
+```{r}
+#Ryanair Traveller Type in Negative Reviews
+Dis.traveller.Ryanair <- Ryanair.Dissatisfied %>%
+  group_by(Traveller.Type.Airline)%>%
+  summarise (Number = n(),
+             Airline = "Ryanair") %>%
+  filter (Number >2) %>%
+  drop_na ()
+
+ggplot (Dis.traveller.Ryanair, aes (x= reorder (Traveller.Type.Airline, -Number), y = Number))+
+  geom_bar (stat = "identity", fill = "darkred")+
+  labs (y = "Frequency",
+        x = "Traveller Type",
+        title = "Ryanair:Traveller Type Mentioned in Negative Reviews")+
+  theme (axis.text.x = element_text (angle = 90, hjust = 1))
+
+
+#easyJet Traveller Type in Negative Reviews
+Dis.traveller.EJ <- easyJet.Dissatisfied %>%
+  group_by(Traveller.Type.Airline)%>%
+  summarise (Number = n(),
+             Airline = "easyJet") %>%
+  filter (Number >2) %>%
+  drop_na ()
+
+ggplot (Dis.traveller.EJ, aes (x= reorder (Traveller.Type.Airline, -Number), y = Number))+
+  geom_bar (stat = "identity", fill = "yellow")+
+  labs (y = "Frequency",
+        x = "Traveller Type",
+        title = "easyJet:Traveller Type Mentioned in Negative Reviews")+
+  theme (axis.text.x = element_text (angle = 90, hjust = 1))
+```
+
+**Observations**
+
+- Across both Ryanair and easyJet, "leisure" travellers (solo, couple, and family) absolutely dominate the negative reviews, while "business" complaints are rare. This likely happens because business travellers have their fees paid by their company, whereas leisure travellers feel the pain of hidden costs directly in their own money.
+
+- It is highly revealing that Couple Leisure is the #1 source of complaints for Ryanair and a close #2 for easyJet. In the low-cost industry, this points to the universally seating policies where airlines split up couples on the plane to force them to pay a "seat selection" fee.
+
+- Solo Leisure is the top complaint driver for easyJet and #2 for Ryanair. These are the type of passengers who travel light for quick city breaks and are getting bothered by the strict cabin bag measuring rules at the gate.
+
+### 5.6.6 Emotional Positioning 
+
+This MDS (Multidimensional Scaling) plot is the summary of our entire sentiment analysis. It takes all those complex emotion scores and plots them on a map to show us exactly who is similar to whom.
+
+```{r}
+Airlines_MeanEmotions <- AirlineReviews_Sentiment_Means [, 1:12] #Select the columns containing the mean emotion score for each airline
+EmotionDistance_Airlines <- as.matrix(dist(Airlines_MeanEmotions)) #Compute euclidean score
+## Warning in dist(Airlines_MeanEmotions): NAs introduced by coercion
+rownames (EmotionDistance_Airlines) <-AirlineReviews_Sentiment_Means$Airline # Assign airline names
+
+MDS_Emotions <- cmdscale(EmotionDistance_Airlines, eig = TRUE, k =2) #Multidimensional scaling to reduce to 2-dimensions
+
+x <- MDS_Emotions$points [, 1] #Extract coordinates
+y <- MDS_Emotions$points [ ,2] #Extract coordinates
+
+
+#Visualize the plot
+plot (x,y, xlab = "Dimension 1", ylab = "Dimension 2",
+      main = "MDS Airlines by Emotions in Reviews", type = "n")
+text (x,y, labels = row.names (EmotionDistance_Airlines), cex = 0.7)
+```
+
+**Observations**
+
+- Jet2 and Norwegian Air are located on the left (the "Trust/Positive" side), while easyJet and Ryanair are pointed far to the right (the "Anger/Fear/Stress" side). They share the horizontal space, but they are completely separated vertically. This proves that Jet2 wins through operational Joy and regional efficiency (top left), while Norwegian wins through Trust and modern perks (bottom left).
+
+- EasyJet and Ryanair are close to each other on the right side. This visually proves that they suffer from the exact same systematic emotional problems (baggage, unhelpful staff, delay anxiety). Ryanair is just pushed further to the extreme edge because their negativity is more severe.
+
+*Strategic Takeaway for AeroValue:* This map reveals a massive gap in the market. AeroValue must completely avoid the toxic right side of this map (easyJet/Ryanair zone) by offering transparent pricing and empathetic service. AeroValue can comfortably position itself in the empty space right in the middle left, delivering the reliability of Jet2 without having to invest in the expensive aircraft like Norwegian does.
+
+## 7. Positioning Strategy
+
+Based on the multidimensional scaling (MDS) map, text-mining of qualitative reviews, and current EU regulatory shifts, AeroValue must occupy a highly specific white space: delivering the operational reliability and high "trust" of Jet2, without requiring the expensive premium hardware of Norwegian Air. We will position AeroValue as the "transparent challenger", capitalizing on the highly-recorded "anger" and "fear" sentiment scores generated by established players.
+
+### 7.1 Target Customer Segments
+
+AeroValue will target three core segments deeply alienated by current LCC practices:
+
+- *The Budget Leisure Traveller (solos & couples):* Text-mining proves this demographic generates the vast majority of negative reviews for Ryanair and easyJet due to out-of-nowhere penalties. They are hyper-sensitive to algorithmic seating separations and gate-checked baggage fees. They demand absolute pricing transparency.
+
+- *The High-Anxiety Family Vacationer:* Holidaymakers who fly 1-2 times a year. For them, the modern airport experience triggers high "fear" (stress, measuring panics, family separation). They are willing to pay a comparable, honest budget fare for a guaranteed stress-free start to their vacation.
+
+- *The Cost-Conscious SME (mid-week revenue):* Small business travellers who require low fares but demand predictable final costs for expense reporting. Establsihed LCC "drip pricing" makes their budgeting impossible.
+
+### 7.2 4Ps Action Plan
+
+- *Product (Service Design):*
+
+Because Solo Leisure travellers represent the baggage-stress complaints, AeroValue will design a highly standardized "weekend backpack" allowance that eliminates the anxiety at the gate, when the airline measures the package weight . Furthermore, we will invest in a mobile app that acts as an AI-powered platform proactively notifying passengers of gate changes before they have to wait around a departure screen.
+
+- *Price:*
+
+AeroValue will entirely abandon the "drip pricing" model. We will introduce an "all-in basic" fare that runs ahead of the incoming EU regulations on standardized cabin bags. Because couples are the highest complaining demographic regarding seat-splitting, AeroValue will introduce the "togetherness guarantee". Passengers on the same booking are seated together for free, removing the industry's algorithmic seating penalties.
+
+- *Place (Route Strategy):*
+
+Avoid the saturated, expensive and highly crowded mega-hubs (e.g., London Stansted, Frankfurt Main). Mirroring Jet2’s operational success, AeroValue will target under-served secondary and regional European airports where Air Traffic Control (ATC) friction is lower, turnarounds are smoother. Strategic examples include route through Girona–Costa Brava Airport rather than Barcelona El Prat, or utilizing Memmingen Airport to capture the Bavarian market without the bottlenecks of Munich.
+
+- *Promotion (Communication)* 
+
+Marketing will aggressively but professionally contrast AeroValue's transparent pricing with the hidden fees of competitors. The brand will promise that the operations are boring and predictable, reassuring customer that the fare you see is the fare you pay, and the vacation begins the moment you book, not after you survive through the gate check. Here is an example of effective campaign actions AeroValue could deploy:
+
+Buy billboard space (OOH) on the main highways leading into the target airports, or right inside the airport terminals near competitors' check-in desks.
+
+The message: 
+
+Competitor: €15 fare + €35 bag fee + €15 seat selection = €65 total (with headache).
+
+AeroValue: €50 all in = €50 total (and peace of mind).
+
+Tagline: "The fare you see is the fare you pay"
+
+### 7.3 Differentitation Strategy & Competitive Edge 
+
+AeroValue will systematically exploit the operational and psychological gaps caused by the four major competitors:
+
+Vs. Ryanair (trust gap): AeroValue strictly refuses to monetize customer mistakes (no boarding pass printing fees, etc). By operating with basic respect, we immediately eliminate the industry's highest "anger" scores.
+
+Vs. easyJet (anxiety gap): AeroValue wins through proactive digitalization. Our app will manage the unavoidable delays of EU airspace with instant, automated re-booking and voucher options, turning operational problem into well-thought customer service.
+
+Vs. Norwegian (operations gap): While Norwegian over-invests in expensive hardware (like free in-flight Wi-Fi, modern airplanes), AeroValue focuses on operational reliability, punctuality, and empowering ground staff to be problem solvers.
+
+Vs. Jet2 (modernization gap): While Jet2 is the standard for customer care, its brand is tied to older demographics and traditional holiday bookings. AeroValue adopts Jet2’s empathetic service but delivers it through a mobile-first experience customized for the modern traveler.
+
+## 8. Limitations and Conclusion
+
+### 8.1 Limitations
+
+It is important to acknowledge that the Google Trends data utilized the UK market as a sample for broader EU awareness. Additionally, sentiment analysis of online reviews inherently suffers from self-selection bias, where passengers are most likely to leave reviews only when they experience extreme negative frustration or extreme positive delight. This likely skews the overall baseline sentiment of the industry and may under-represent the silent majority of satisfied budget travelers. Also, our text analysis relied on a pre-selected dictionary to search for specific emotional keywords like "anger" and "fear." While this is excellent for measuring overall mood, it has a blind spot: the software only finds the exact words we tell it to look for. Because we did not use a "bottom-up" machine learning model, we may have missed highly specific, unexpected passenger complaints because those exact words were not in our search list.
+
+### 8.2 Conclusion
+
+AeroValue does not need to be a big game changer in aviation to succeed. The data proves that the budget airlines rely on frustrated, on-budget audience. By treating operational reliability, price transparency, and passenger respect as a standard rather than premium upgrades, AeroValue will rapidly disrupt the market. We will turn the industry's 1-star median into our greatest competitive advantage and build our success on the thing our competitors abandoned: dignity.
