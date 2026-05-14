@@ -5,7 +5,7 @@ The European low-cost carrier (LCC) market is highly profitable but structurally
 
 This project provides a data-driven market entry roadmap for a challenger airline, **AeroValue**. By utilizing advanced text-mining and sentiment analysis on over 9,500 verified customer reviews alongside macro-level search trends, this analysis decodes the emotional and operational drivers of passenger satisfaction to locate an undefended, high-yield market opening.
 
-**[👉 View the full interactive HTML Data Report here]**
+**[👉 View the full interactive HTML Data Report here](https://anhdao-github.github.io/Low-Cost-Airline-Competitive-Positioning-Strategy-via-User-Generated-Data/)**
 
 ## 🛠️ Tech Stack & Methodology
 * **Language:** R
