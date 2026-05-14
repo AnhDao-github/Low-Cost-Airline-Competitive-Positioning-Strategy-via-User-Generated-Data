@@ -1,4 +1,4 @@
-# ✈️ AeroValue: Competitive Positioning Strategy via User-Generated Data
+# ✈️ Low-Cost-Airline: Competitive Positioning Strategy via User-Generated Data
 
 ## 📊 Project Overview
 The European low-cost carrier (LCC) market is highly profitable but structurally broken, defined by a massive "trust deficit" fueled by hidden fees and operational anxiety. 
